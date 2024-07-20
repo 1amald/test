@@ -4,17 +4,17 @@ namespace BankCalc;
 
 internal static class JsonProvider
 {
-    private static string FilePath => "C:/repos/test/banknotesQuantities.json";
+    private static string FilePath => "../banknotesQuantities.json";
 
-    public static BanknoteQuantity[] GetBanknotes()
+    public static async Task<BanknoteQuantity[]> GetBanknotes()
     {
-        var banknotesQuantitiesJson = File.ReadAllText(FilePath);
+        var banknotesQuantitiesJson = await File.ReadAllTextAsync(FilePath);
         var banknotesQuantities = JsonSerializer.Deserialize<BanknoteQuantity[]>(banknotesQuantitiesJson)!;
 
         return banknotesQuantities;
     }
 
-    public static void FillBanknotes()
+    public static async Task FillBanknotes()
     {
         var banknotesQuantities = new[]
         {
@@ -23,6 +23,7 @@ internal static class JsonProvider
             new BanknoteQuantity(500, 10),
             new BanknoteQuantity(100, 10)
         };
-        File.WriteAllText(FilePath, JsonSerializer.Serialize(banknotesQuantities));
+
+        await File.WriteAllTextAsync(FilePath, JsonSerializer.Serialize(banknotesQuantities));
     }
 }

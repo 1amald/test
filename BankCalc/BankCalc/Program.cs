@@ -1,14 +1,17 @@
 ﻿using BankCalc;
 
-//JsonProvider.FillBanknotes()
-var banknotes = JsonProvider.GetBanknotes();
+//await JsonProvider.FillBanknotes();
+var banknotes = await JsonProvider.GetBanknotes();
 var bankTerminal = new BankTerminal(banknotes);
 
 while (true)
 {
-    Console.WriteLine("Enter sum");
-    var sum = Convert.ToInt32(Console.ReadLine());
-    Console.WriteLine(bankTerminal.SumCanBeGiven(sum));
+    Console.WriteLine("Введите сумму");
+
+    if (InputValidator.AmountIsValid(Console.ReadLine()!, out var targetSum))
+    {
+        Console.WriteLine(bankTerminal.SumCanBeGiven(targetSum));
+    }
 }
 
 

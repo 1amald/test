@@ -8,7 +8,7 @@ internal sealed class BankTerminal
     {
         _banknotes = banknoteQuantities
             .OrderByDescending(x => x.Nominal)
-            .SelectMany(x => Enumerable.Range(1, x.Quantity).Select(_ => x.Nominal))
+            .SelectMany(x => Enumerable.Repeat(x.Nominal, x.Quantity))
             .ToArray();
     }
 
