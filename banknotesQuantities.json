@@ -1,0 +1,18 @@
+[
+    {
+        "Nominal": 5000,
+        "Quantity": 10
+    },
+    {
+        "Nominal": 1000,
+        "Quantity": 10
+    },
+    {
+        "Nominal": 500,
+        "Quantity": 10
+    },
+    {
+        "Nominal": 100,
+        "Quantity": 10
+    }
+]
