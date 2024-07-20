@@ -12,27 +12,38 @@ internal sealed class BankTerminal
             .ToArray();
     }
 
-    public bool SumCanBeGiven(int amount)
+    public bool SumCanBeGiven(int targetSum)
     {
-        var sums = new HashSet<int>();
-        sums.Add(0);
+        var sums = new HashSet<int>
+        {
+            0
+        };
 
         for (var i = 0; i < _banknotes.Length; i++)
         {
+            if (_banknotes[i] > targetSum)
+            {
+                continue;
+            }
+
+            var newSums = new List<int>();
+
             foreach (var sum in sums)
             {
                 var newSum = sum + _banknotes[i];
 
-                if (newSum == amount)
+                if (newSum == targetSum)
                 {
                     return true;
                 }
 
-                if (newSum < amount && !sums.Contains(newSum))
+                if (newSum < targetSum)
                 {
-                    sums.Add(newSum);
+                    newSums.Add(newSum);
                 }
             }
+
+            sums.UnionWith(newSums);
         }
 
         return false;
