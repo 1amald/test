@@ -2,67 +2,39 @@
 
 internal sealed class BankTerminal
 {
-    private Dictionary<int, int> BanknoteQuantities { get; }
+    private readonly int[] _banknotes;
 
     public BankTerminal(BanknoteQuantity[] banknoteQuantities)
     {
-        BanknoteQuantities = banknoteQuantities
-            .GroupBy(x => x.Nominal, x => x)
-            .ToDictionary(x => x.Key, x => x.Sum(x => x.Quantity));
+        _banknotes = banknoteQuantities
+            .OrderByDescending(x => x.Nominal)
+            .SelectMany(x => Enumerable.Range(1, x.Quantity).Select(_ => x.Nominal))
+            .ToArray();
     }
 
-    public bool SumCanBeGiven(int sum)
+    public bool SumCanBeGiven(int amount)
     {
-        if (BanknoteQuantities.ContainsKey(sum))
+        var sums = new HashSet<int>();
+        sums.Add(0);
+
+        for (var i = 0; i < _banknotes.Length; i++)
         {
-            return true;
-        }
-
-        var banknotesLst = new List<int>();
-
-        foreach (var banknoteQuantity in BanknoteQuantities)
-        {
-            banknotesLst.AddRange(Enumerable.Range(1, banknoteQuantity.Value).Select(_ => banknoteQuantity.Key));
-        }
-
-        var banknotes = banknotesLst.ToArray();
-
-        var result = Sums(banknotes, sum);
-
-        return result;
-    }
-
-    private bool Sums(int[] arr, int target)
-    {
-        var stack = new int[arr.Length];
-        var top = 0;
-
-        var success = false;
-
-        void Iteration(int i, int target)
-        {
-            if (target < 0)
+            foreach (var sum in sums)
             {
-                return;
-            }
+                var newSum = sum + _banknotes[i];
 
-            if (target == 0)
-            {
-                success = true;
-                return;
-            }
+                if (newSum == amount)
+                {
+                    return true;
+                }
 
-            if (i < arr.Length)
-            {
-                stack[top++] = arr[i];
-                Iteration(i + 1, target - arr[i]);
-                --top;
-                Iteration(i + 1, target);
+                if (newSum < amount && !sums.Contains(newSum))
+                {
+                    sums.Add(newSum);
+                }
             }
         }
 
-        Iteration(0, target);
-
-        return success;
+        return false;
     }
 }
